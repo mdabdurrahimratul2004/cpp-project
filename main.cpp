@@ -304,7 +304,7 @@ public:
             cout << "Initial Balance: " << fixed << setprecision(2) << balance << " TK\n";
         }
 
-        returnMenuOrExit();
+    
     }
 
     void showLastTransactions(string userid) {                                  // last 5 transaction dekhanor jonno
@@ -636,6 +636,7 @@ public:
     void showBalance(string userid) {                                                            // balance dekhanor jonno
         double balance = getBalance(userid);
         cout << "\nCurrent Balance: " << fixed << setprecision(2) << balance << " TK\n";
+        returnMenuOrExit();
     }
 
     bool deleteAccount(string userid) {                                        // account delete korar jonno
@@ -791,7 +792,7 @@ public:
         out.close();
         remove("customers.txt");
         rename("temp.txt", "customers.txt");
-        returnMenuOrExit();
+        
     }
 
     void aboutUs() {                                                              // about us page dekhanor jonno
