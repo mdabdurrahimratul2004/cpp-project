@@ -461,7 +461,7 @@ public:
         displayHeader("VIEW CUSTOMER TRANSACTIONS");
         string userid = getValidUserId();
         showLastTransactions(userid);
-        returnMenuOrExit();
+        
     }
 
     void setupLoanCode() {
