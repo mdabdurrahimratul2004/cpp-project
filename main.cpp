@@ -6,45 +6,56 @@
 #include <limits>
 using namespace std;
 
+
+#define RESET   "\033[0m"                                                                                        // terminal output colorful dekhanor jonno
+#define RED     "\033[31m"
+#define GREEN   "\033[32m"
+#define YELLOW  "\033[33m"
+#define BLUE    "\033[34m"
+#define MAGENTA "\033[35m"
+#define CYAN    "\033[36m"
+#define WHITE   "\033[37m"
+#define BOLD    "\033[1m"
+#define UNDERLINE "\033[4m"
+
 class Customer {
-    public:
-        string name, userid, nid, phoneNumber, email;
-        int birthYear;
-        double balance;
-    
-        Customer() {}                                               // Default constructor
-    
-        Customer(string n, string uid, string id, int by, string p, string e, double b) {              // Parameterized constructor 
-            name = n;
-            userid = uid;
-            nid = id;
-            birthYear = by;
-            phoneNumber = p;
-            email = e;
-            balance = b;
-        }
-    
-        void saveToFile() {                                             // file a customer details save korar jonno
-            ofstream outFile("customers.txt", ios::app); 
-            outFile << userid << "|" << name << "|" << nid << "|" << birthYear << "|"
-                    << phoneNumber << "|" << email << "|" << fixed << setprecision(2) << balance << endl;
-            outFile.close();
-        }
-    
-        void savePassword(string pass) {                                            // file a password save korar jonno
-            ofstream outFile("users.txt", ios::app);
-            outFile << userid << "|" << pass << endl;
-            outFile.close();
-        }
-    };
-    
+public:
+    string name, userid, nid, phoneNumber, email;
+    int birthYear;
+    double balance;
+
+    Customer() {}                                                                                            // Default constructor customer class ar jonno
+
+    Customer(string n, string uid, string id, int by, string p, string e, double b) {
+        name = n;
+        userid = uid;
+        nid = id;
+        birthYear = by;
+        phoneNumber = p;
+        email = e;
+        balance = b;
+    }
+
+    void saveToFile() {                                                                                     // customer class ar data save korar jonno function
+        ofstream outFile("customers.txt", ios::app);
+        outFile << userid << "|" << name << "|" << nid << "|" << birthYear << "|"
+                << phoneNumber << "|" << email << "|" << fixed << setprecision(2) << balance << endl;
+        outFile.close();
+    }
+
+    void savePassword(string pass) {                                                           // customer class ar password save korar jonno function
+        ofstream outFile("users.txt", ios::app);
+        outFile << userid << "|" << pass << endl;
+        outFile.close();
+    }
+};
 
 void clearInputBuffer() {
     cin.clear();
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
 
-class Transaction {                                                             // transaction class ,  transaction details save korar jonno
+class Transaction {                                                                            // transaction class ar data save korar jonno function
 public:
     string type;
     double amount;
@@ -55,10 +66,9 @@ public:
         amount = a;
         time_t now = time(0);
         datetime = ctime(&now);
-        datetime = datetime.substr(0, datetime.length()-1); 
+        datetime = datetime.substr(0, datetime.length()-1);
     }
 };
-
 
 class Bank {
 protected:
@@ -76,26 +86,25 @@ protected:
         inFile.close();
     }
 
-    void initializeManagerFile() {                                    //manager ar login , password and loan code default vabe save korar jonno
+    void initializeManagerFile() {                                                          // manager file default password save korar jonno function
         ifstream testFile("manager.txt");
         if (!testFile.good()) {
             ofstream outFile("manager.txt");
-            outFile << "admin|admin123|123456" << endl; 
+            outFile << "admin|admin123|123456" << endl;
             outFile.close();
         } else {
             testFile.close();
         }
     }
 
-    void recordTransaction(string userid, string type, double amount) {                  // transaction file a transaction details save korar jonno
+    void recordTransaction(string userid, string type, double amount) {                       // transaction file e data save korar jonno function
         ofstream outFile("transactions.txt", ios::app);
         Transaction t(type, amount);
         outFile << userid << "|" << t.type << "|" << fixed << setprecision(2) << t.amount
                 << "|" << t.datetime << endl;
         outFile.close();
 
-      
-        vector<string> transactions;                                     // transaction file a save kora details gulo read korar jonno
+        vector<string> transactions;
         ifstream inFile("transactions.txt");
         string line;
         while (getline(inFile, line)) {
@@ -128,7 +137,7 @@ protected:
 
 public:
     Bank() {
-        initializeManagerFile(); 
+        initializeManagerFile();
         loadExistingUserIds();
     }
 
@@ -160,43 +169,48 @@ public:
         return false;
     }
 
-    void displayHeader(string title) {
-        cout << "\n========================================\n";
-        cout << "              " << title << "\n";
+    void displayHeader(string title) {                                                       // header display korar jonno function (jate sob ak rokom dekhay)
+        cout << "\n" << BOLD << CYAN;
         cout << "========================================\n";
+        cout << "            " << title << "           \n";
+        cout << "========================================\n" << RESET;
     }
 
     void displayMenu(vector<string> options) {
         for (size_t i = 0; i < options.size(); i++) {
-            cout << i+1 << ". " << options[i] << "\n";
+            cout << GREEN << " " << (i+1) << ". " << RESET << options[i] << "\n";
         }
+        cout << "\n";
     }
 
-    void returnMenuOrExit() {
-        cout << "\n----------------------------------------\n";
-        cout << "1. Return to Main Menu\n2. Exit\n";
+    void returnMenuOrExit() {                                                      // menu theke ber hote chaile exit korar jonno function
+        cout << "\n" << YELLOW << "----------------------------------------\n" << RESET;
+        cout << BOLD << "1. Return to Main Menu\n2. Exit\n" << RESET;
+        cout << YELLOW << "----------------------------------------\n" << RESET;
         cout << "Enter your choice: ";
 
         int option;
         while (!(cin >> option) || (option != 1 && option != 2)) {
-            cout << "Invalid input. Please enter 1 or 2: ";
+            cout << RED << "Invalid input. Please enter 1 or 2: " << RESET;
             clearInputBuffer();
         }
 
         if (option == 2) {
-            cout << "\nThank you for banking with us.\n";
+            cout << "\n" << GREEN << "========================================\n";
+            cout << "   Thank you for banking with us!\n";
+            cout << "========================================\n" << RESET;
             exit(0);
         }
     }
-
-    string getValidUserId() {
-        string userid;
+ 
+    string getValidUserId() {                                                        // user id input nite function
+        string userid; 
         while (true) {
-            cout << "Enter 4-digit user ID: ";
+            cout << BOLD << "Enter 4-digit user ID: " << RESET;
             cin >> userid;
 
             if (userid.length() != 4 || !all_of(userid.begin(), userid.end(), ::isdigit)) {
-                cout << "Invalid input. User ID must be exactly 4 digits.\n";
+                cout << RED << "Invalid input. User ID must be exactly 4 digits.\n" << RESET;
                 clearInputBuffer();
             } else {
                 break;
@@ -205,7 +219,7 @@ public:
         return userid;
     }
 
-    void createAccount() {                                                           // account create korar jonno
+    void createAccount() {                                                         // account create korar jonno function
         displayHeader("ACCOUNT CREATION");
         vector<string> options = {
             "Single Account",
@@ -217,7 +231,7 @@ public:
 
         int choice;
         while (!(cin >> choice) || choice < 1 || choice > 3) {
-            cout << "Invalid choice. Please enter 1-3: ";
+            cout << RED << "Invalid choice. Please enter 1-3: " << RESET;
             clearInputBuffer();
         }
 
@@ -227,87 +241,86 @@ public:
 
         int total = (choice == 1) ? 1 : 0;
         if (choice == 2) {
-            cout << "Number of accounts to create (1-10): ";                                          // multiple account create korar jonno
+            cout << "Number of accounts to create (1-10): ";
             while (!(cin >> total) || total < 1 || total > 10) {
-                cout << "Invalid input. Please enter 1-10: ";
+                cout << RED << "Invalid input. Please enter 1-10: " << RESET;
                 clearInputBuffer();
             }
         }
 
-        for (int i = 0; i < total; i++) {
+        for (int i = 0; i < total; i++) {                                           //multiple account create korar jonno loop
             displayHeader("CREATING ACCOUNT " + to_string(i+1));
 
             string name, userid, nid, phoneNumber, email, password;
             int birthYear;
             double balance;
 
-            cout << "Enter your full name: ";
+            cout << BOLD << "Enter your full name: " << RESET;
             clearInputBuffer();
             getline(cin, name);
 
-            
             while (true) {
                 userid = getValidUserId();
                 if (isUserIdUnique(userid)) break;
-                cout << "User ID already exists. Please try another.\n";
+                cout << RED << "User ID already exists. Please try another.\n" << RESET;
             }
 
-            cout << "Enter your 10-digit NID number: ";
+            cout << BOLD << "Enter your 10-digit NID number: " << RESET;
             while (!(cin >> nid) || nid.length() != 10 || !all_of(nid.begin(), nid.end(), ::isdigit)) {
-                cout << "Invalid NID. Must be 10 digits: ";
+                cout << RED << "Invalid NID. Must be 10 digits: " << RESET;
                 clearInputBuffer();
             }
 
-            cout << "Enter your birth year (1925-2025): ";
+            cout << BOLD << "Enter your birth year (1925-2025): " << RESET;
             while (!(cin >> birthYear) || birthYear < 1925 || birthYear > 2025) {
-                cout << "Invalid year. Enter between 1900-2025: ";
+                cout << RED << "Invalid year. Enter between 1900-2025: " << RESET;
                 clearInputBuffer();
             }
 
             int age = 2025 - birthYear;
             if (age < 18) {
-                cout << "You must be at least 18 years old to create an account.\n";
+                cout << RED << "\nYou must be at least 18 years old to create an account.\n" << RESET;
                 continue;
             }
 
-            cout << "Enter your phone number: ";
+            cout << BOLD << "Enter your phone number: " << RESET;
             while (!(cin >> phoneNumber) || phoneNumber.length() < 7) {
-                cout << "Invalid phone number. Try again: ";
+                cout << RED << "Invalid phone number. Try again: " << RESET;
                 clearInputBuffer();
             }
 
-            cout << "Enter your email: ";
+            cout << BOLD << "Enter your email: " << RESET;
             cin >> email;
 
-            cout << "Enter initial balance (minimum 500 TK): ";
+            cout << BOLD << "Enter initial balance (minimum 500 TK): " << RESET;
             while (!(cin >> balance) || balance < 500) {
-                cout << "Minimum balance is 500 TK. Enter amount: ";
+                cout << RED << "Minimum balance is 500 TK. Enter amount: " << RESET;
                 clearInputBuffer();
             }
 
-            cout << "Set a password (at least 4 characters): ";
+            cout << BOLD << "Set a password (at least 4 characters): " << RESET;
             while (!(cin >> password) || password.length() < 4) {
-                cout << "Password too short. Minimum 4 characters: ";
+                cout << RED << "Password too short. Minimum 4 characters: " << RESET;
                 clearInputBuffer();
             }
 
-            Customer newCustomer(name, userid, nid, birthYear, phoneNumber, email, balance);    // customer object create korar jonno
+            Customer newCustomer(name, userid, nid, birthYear, phoneNumber, email, balance);                             
             newCustomer.saveToFile();
             newCustomer.savePassword(password);
             userids.push_back(userid);
 
             recordTransaction(userid, "DEPOSIT", balance);
 
-            cout << "\n=== ACCOUNT CREATED SUCCESSFULLY ===\n";
-            cout << "Name: " << name << "\n";
-            cout << "User ID: " << 7638000000 + stoll(userid) << "\n";
-            cout << "Initial Balance: " << fixed << setprecision(2) << balance << " TK\n";
+            cout << GREEN << "\n========================================\n";
+            cout << "      ACCOUNT CREATED SUCCESSFULLY\n";
+            cout << "========================================\n" << RESET;
+            cout << BOLD << "Name: " << RESET << name << "\n";
+            cout << BOLD << "User ID: " << RESET << "7638" << userid << "\n";
+            cout << BOLD << "Initial Balance: " << RESET << fixed << setprecision(2) << balance << " TK\n";
         }
-
-    
     }
 
-    void showLastTransactions(string userid) {                                  // last 5 transaction dekhanor jonno
+    void showLastTransactions(string userid) {                                    // last 5 transactions dekhar jonno function
         displayHeader("LAST 5 TRANSACTIONS");
 
         ifstream inFile("transactions.txt");
@@ -322,26 +335,27 @@ public:
         inFile.close();
 
         if (transactions.empty()) {
-            cout << "No transactions found.\n";
+            cout << YELLOW << "No transactions found.\n" << RESET;
             return;
         }
 
         int start = max(0, (int)transactions.size() - 5);
-        cout << left << setw(12) << "Type" << setw(12) << "Amount" << "Date/Time\n";
+        cout << BOLD << left << setw(12) << "Type" << setw(12) << "Amount" << "Date/Time\n" << RESET;
         cout << string(40, '-') << endl;
 
         for (size_t i = start; i < transactions.size(); i++) {
             vector<string> parts = splitString(transactions[i], '|');
             if (parts.size() >= 4) {
-                cout << left << setw(12) << parts[1]
-                     << setw(12) << parts[2]
+                string typeColor = (parts[1] == "DEPOSIT") ? GREEN : RED;
+                cout << typeColor << left << setw(12) << parts[1] << RESET
+                     << BOLD << setw(12) << parts[2] << RESET
                      << parts[3] << endl;
             }
         }
         returnMenuOrExit();
     }
 
-    void editContactInfo(string userid) {                                      // contact information edit korar jonno
+    void editContactInfo(string userid) {                                                    // contact information edit korar jonno function
         displayHeader("EDIT CONTACT INFORMATION");
 
         ifstream inFile("customers.txt");
@@ -353,21 +367,21 @@ public:
             vector<string> parts = splitString(line, '|');
             if (parts.size() >= 7 && parts[0] == userid) {
                 found = true;
-                cout << "\nCurrent Information:\n";
+                cout << "\n" << BOLD << "Current Information:\n" << RESET;
                 cout << "Phone: " << parts[4] << "\n";
                 cout << "Email: " << parts[5] << "\n";
 
                 string newPhone, newEmail;
-                cout << "\nEnter new phone number: ";
+                cout << "\n" << BOLD << "Enter new phone number: " << RESET;
                 cin >> newPhone;
-                cout << "Enter new email: ";
+                cout << BOLD << "Enter new email: " << RESET;
                 cin >> newEmail;
 
                 outFile << parts[0] << "|" << parts[1] << "|" << parts[2] << "|"
                         << parts[3] << "|" << newPhone << "|" << newEmail << "|"
                         << parts[6] << endl;
 
-                cout << "\nContact information updated successfully.\n";
+                cout << GREEN << "\nContact information updated successfully.\n" << RESET;
             } else {
                 outFile << line << endl;
             }
@@ -379,14 +393,14 @@ public:
         rename("temp.txt", "customers.txt");
 
         if (!found) {
-            cout << "Account not found.\n";
+            cout << RED << "Account not found.\n" << RESET;
         }
         returnMenuOrExit();
     }
 
-    void userPanel(string userid) {                                               // user panel ar menu dekhanor jonno
+    void userPanel(string userid) {                                                           // user panel e jate user login hoye kaj korte pare
         displayHeader("USER DASHBOARD");
-        cout << "Logged in as: " << 7638000000 + stoll(userid) << "\n";
+        cout << BOLD << "Logged in as: " << RESET << "7638" << userid << "\n";
 
         int choice;
         do {
@@ -405,7 +419,7 @@ public:
             cout << "Enter your choice: ";
 
             while (!(cin >> choice) || choice < 1 || choice > 8) {
-                cout << "Invalid choice. Enter 1-8: ";
+                cout << RED << "Invalid choice. Enter 1-8: " << RESET;
                 clearInputBuffer();
             }
 
@@ -423,8 +437,8 @@ public:
             }
         } while (true);
     }
- 
-    void managerPanel() {                                                        // manager panel ar menu dekhanor jonno
+
+    void managerPanel() {                                                               // manager panel ar menu dekhanor jonno function
         displayHeader("MANAGER DASHBOARD");
 
         int choice;
@@ -442,7 +456,7 @@ public:
             cout << "Enter your choice: ";
 
             while (!(cin >> choice) || choice < 1 || choice > 6) {
-                cout << "Invalid choice. Enter 1-6: ";
+                cout << RED << "Invalid choice. Enter 1-6: " << RESET;
                 clearInputBuffer();
             }
 
@@ -461,25 +475,24 @@ public:
         displayHeader("VIEW CUSTOMER TRANSACTIONS");
         string userid = getValidUserId();
         showLastTransactions(userid);
-        
     }
 
     void setupLoanCode() {
         displayHeader("SETUP LOAN CODE");
 
         string code;
-        cout << "Enter new 6-digit Loan Activation Code: ";
+        cout << BOLD << "Enter new 6-digit Loan Activation Code: " << RESET;
         while (!(cin >> code) || code.length() != 6 || !all_of(code.begin(), code.end(), ::isdigit)) {
-            cout << "Invalid code. Must be 6 digits: ";
+            cout << RED << "Invalid code. Must be 6 digits: " << RESET;
             clearInputBuffer();
         }
 
         ofstream out("manager.txt");
         out << "admin|admin123|" << code << endl;
-        cout << "\nLoan Activation Code updated successfully.\n";
+        cout << GREEN << "\nLoan Activation Code updated successfully.\n" << RESET;
     }
 
-    string getLoanCode() {                                            // loan code read korar jonno 
+    string getLoanCode() {                                                                      // loan activation code pabar jonno function
         ifstream file("manager.txt");
         string line;
         if (getline(file, line)) {
@@ -491,71 +504,71 @@ public:
         return "";
     }
 
-    void deposit(string userid) {                                           // deposit korar jonno
+    void deposit(string userid) {                                                             // deposit korar jonno function
         displayHeader("DEPOSIT");
 
         double amount;
-        cout << "Enter deposit amount: ";
+        cout << BOLD << "Enter deposit amount: " << RESET;
         while (!(cin >> amount) || amount <= 0) {
-            cout << "Invalid amount. Enter positive value: ";
+            cout << RED << "Invalid amount. Enter positive value: " << RESET;
             clearInputBuffer();
         }
 
         updateCustomer(userid, amount);
         recordTransaction(userid, "DEPOSIT", amount);
 
-        cout << "\nDeposit of " << fixed << setprecision(2) << amount
-             << " TK completed successfully.\n";
+        cout << GREEN << "\nDeposit of " << fixed << setprecision(2) << amount
+             << " TK completed successfully.\n" << RESET;
         showBalance(userid);
     }
 
-    void withdraw(string userid) {                                              // withdraw korar jonno  , dorkaar hole loan o nawar jonno
+    void withdraw(string userid) {                                                            // withdraw korar jonno function
         displayHeader("WITHDRAWAL");
 
         double currentBal = getBalance(userid);
         if (currentBal < 0) {
-            cout << "Your account is overdrawn. Cannot withdraw.\n";
+            cout << RED << "Your account is overdrawn. Cannot withdraw.\n" << RESET;
             return;
         }
 
-        cout << "Current Balance: " << fixed << setprecision(2) << currentBal << " TK\n";
-        cout << "Enter withdrawal amount: ";
+        cout << BOLD << "Current Balance: " << RESET << fixed << setprecision(2) << currentBal << " TK\n";
+        cout << BOLD << "Enter withdrawal amount: " << RESET;
 
         double amount;
         while (!(cin >> amount) || amount <= 0) {
-            cout << "Invalid amount. Enter positive value: ";
+            cout << RED << "Invalid amount. Enter positive value: " << RESET;
             clearInputBuffer();
         }
 
         if (currentBal - amount < 0) {
-            cout << "\nWarning: This withdrawal will overdraft your account.\n";
+            cout << YELLOW << "\nWarning: This withdrawal will overdraft your account.\n" << RESET;
             cout << "1. Proceed with loan\n2. Cancel\nEnter choice: ";
 
             int option;
             while (!(cin >> option) || (option != 1 && option != 2)) {
-                cout << "Invalid choice. Enter 1 or 2: ";
+                cout << RED << "Invalid choice. Enter 1 or 2: " << RESET;
                 clearInputBuffer();
             }
 
             if (option == 2) {
-                cout << "Withdrawal cancelled.\n";
+                cout << YELLOW << "Withdrawal cancelled.\n" << RESET;
                 return;
             }
 
             string inputCode;
-            cout << "Enter Loan Activation Code: ";
+            cout << BOLD << "Enter Loan Activation Code: " << RESET;
             cin >> inputCode;
             string managerCode = getLoanCode();
 
             if (inputCode != managerCode) {
-                cout << "Invalid code. Withdrawal cancelled.\n";
+                cout << RED << "Invalid code. Withdrawal cancelled.\n" << RESET;
                 return;
             }
 
             int years;
-            cout << "Repayment period (1-3 years): ";
+            cout << BOLD << "Repayment period (1-3 years): " << RESET;
             while (!(cin >> years) || years < 1 || years > 3) {
-                cout << "Invalid duration. Enter 1-3: ";
+                cout << RED << "Invalid duration. Enter 1-3: " << RESET;
                 clearInputBuffer();
             }
 
@@ -566,12 +579,12 @@ public:
         updateCustomer(userid, -amount);
         recordTransaction(userid, "WITHDRAW", amount);
 
-        cout << "\nWithdrawal of " << fixed << setprecision(2) << amount
-             << " TK completed successfully.\n";
+        cout << GREEN << "\nWithdrawal of " << fixed << setprecision(2) << amount
+             << " TK completed successfully.\n" << RESET;
         showBalance(userid);
     }
 
-    double getBalance(string userid) {
+    double getBalance(string userid) {                                                                // balance pabar jonno function
         ifstream in("customers.txt");
         string line;
         while (getline(in, line)) {
@@ -581,10 +594,9 @@ public:
             }
         }
         return 0.0;
-
     }
-
-    void processLoan(string userid, double amount, int years) {                         // loan process korar jonno
+ 
+    void processLoan(string userid, double amount, int years) {                                      // loan process ar por show korar jonno function
         int months = years * 12;
         double interest = amount * 0.07;
         double totalToPay = amount + interest;
@@ -595,51 +607,49 @@ public:
 
         displayHeader("LOAN APPROVED");
         cout << fixed << setprecision(2);
-        cout << "Loan Amount:      " << setw(10) << amount << " TK\n";
-        cout << "Interest (7%):    " << setw(10) << interest << " TK\n";
-        cout << "Total Repayment:  " << setw(10) << totalToPay << " TK\n";
-        cout << "Monthly Payment:  " << setw(10) << monthlyPayment << " TK for " << months << " months\n";
-
+        cout << BOLD << "Loan Amount:      " << RESET << setw(10) << amount << " TK\n";
+        cout << BOLD << "Interest (7%):    " << RESET << setw(10) << interest << " TK\n";
+        cout << BOLD << "Total Repayment:  " << RESET << setw(10) << totalToPay << " TK\n";
+        cout << BOLD << "Monthly Payment:  " << RESET << setw(10) << monthlyPayment << " TK for " << months << " months\n";
     }
 
-    void loan(string userid) {                                 // loan nite hole
+    void loan(string userid) {                                                                        // loan nawar jonno function
         displayHeader("LOAN APPLICATION");
 
         string inputCode;
-        cout << "Enter Loan Activation Code: ";
+        cout << BOLD << "Enter Loan Activation Code: " << RESET;
         cin >> inputCode;
         string managerCode = getLoanCode();
 
         if (inputCode != managerCode) {
-            cout << "Invalid code. Loan application rejected.\n";
+            cout << RED << "Invalid code. Loan application rejected.\n" << RESET;
             return;
         }
 
         double amount;
-        cout << "Enter loan amount: ";
+        cout << BOLD << "Enter loan amount: " << RESET;
         while (!(cin >> amount) || amount <= 0) {
-            cout << "Invalid amount. Enter positive value: ";
+            cout << RED << "Invalid amount. Enter positive value: " << RESET;
             clearInputBuffer();
         }
 
         int years;
-        cout << "Repayment period (1-3 years): ";
+        cout << BOLD << "Repayment period (1-3 years): " << RESET;
         while (!(cin >> years) || years < 1 || years > 3) {
-            cout << "Invalid duration. Enter 1-3: ";
+            cout << RED << "Invalid duration. Enter 1-3: " << RESET;
             clearInputBuffer();
         }
 
         processLoan(userid, amount, years);
-        
     }
 
-    void showBalance(string userid) {                                                            // balance dekhanor jonno
+    void showBalance(string userid) {                                                                 // balance show korar jonno function
         double balance = getBalance(userid);
-        cout << "\nCurrent Balance: " << fixed << setprecision(2) << balance << " TK\n";
+        cout << "\n" << BOLD << "Current Balance: " << RESET << fixed << setprecision(2) << balance << " TK\n";
         returnMenuOrExit();
     }
 
-    bool deleteAccount(string userid) {                                        // account delete korar jonno
+    bool deleteAccount(string userid) {                                                                // account delete korar jonno function
         displayHeader("ACCOUNT DELETION");
 
         ifstream in("customers.txt");
@@ -651,14 +661,14 @@ public:
             vector<string> parts = splitString(line, '|');
             if (parts.size() >= 1 && parts[0] == userid) {
                 found = true;
-                cout << "Account for user " << 7638000000 + stoll(userid) << " will be deleted.\n";
-                cout << "Confirm deletion (Y/N): ";
+                cout << "Account for user " << "7638" << userid << " will be deleted.\n";
+                cout << BOLD << "Confirm deletion (Y/N): " << RESET;
 
                 char confirm;
                 cin >> confirm;
                 if (toupper(confirm) != 'Y') {
                     out << line << endl;
-                    cout << "Deletion cancelled.\n";
+                    cout << YELLOW << "Deletion cancelled.\n" << RESET;
                     found = false;
                 }
             } else {
@@ -672,7 +682,6 @@ public:
         rename("temp.txt", "customers.txt");
 
         if (found) {
-      
             ifstream pfile("users.txt");
             ofstream ptemp("ptemp.txt");
             while (getline(pfile, line)) {
@@ -686,7 +695,6 @@ public:
             remove("users.txt");
             rename("ptemp.txt", "users.txt");
 
-            
             ifstream tfile("transactions.txt");
             ofstream ttemp("ttemp.txt");
             while (getline(tfile, line)) {
@@ -699,24 +707,23 @@ public:
             remove("transactions.txt");
             rename("ttemp.txt", "transactions.txt");
 
-           
             userids.erase(remove(userids.begin(), userids.end(), userid), userids.end());
 
-            cout << "Account deleted successfully.\n";
+            cout << GREEN << "Account deleted successfully.\n" << RESET;
             return true;
         } else if (!found) {
-            cout << "Account not found.\n";
+            cout << RED << "Account not found.\n" << RESET;
         }
         return false;
     }
 
-    void deleteAnyAccount() {
+    void deleteAnyAccount() {                                                                            // manager jonno j kono account delete account korar jonno function
         displayHeader("DELETE ACCOUNT");
         string userid = getValidUserId();
         deleteAccount(userid);
     }
 
-    void searchAccount() {
+    void searchAccount() {                                                                                  // account search korar jonno function
         displayHeader("ACCOUNT SEARCH");
         string userid = getValidUserId();
 
@@ -729,23 +736,23 @@ public:
             if (parts.size() >= 7 && parts[0] == userid) {
                 found = true;
                 displayHeader("ACCOUNT DETAILS");
-                cout << "User ID:      " << 7638000000 + stoll(parts[0]) << "\n";
-                cout << "Name:         " << parts[1] << "\n";
-                cout << "Birth Year:   " << parts[3] << "\n";
-                cout << "Phone:        " << parts[4] << "\n";
-                cout << "Email:        " << parts[5] << "\n";
-                cout << "Balance:      " << fixed << setprecision(2) << parts[6] << " TK\n";
+                cout << BOLD << "User ID:      " << RESET << "7638" << parts[0] << "\n";
+                cout << BOLD << "Name:         " << RESET << parts[1] << "\n";
+                cout << BOLD << "Birth Year:   " << RESET << parts[3] << "\n";
+                cout << BOLD << "Phone:        " << RESET << parts[4] << "\n";
+                cout << BOLD << "Email:        " << RESET << parts[5] << "\n";
+                cout << BOLD << "Balance:      " << RESET << fixed << setprecision(2) << parts[6] << " TK\n";
                 break;
             }
         }
 
         if (!found) {
-            cout << "Account not found.\n";
+            cout << RED << "Account not found.\n" << RESET;
         }
         returnMenuOrExit();
     }
 
-    void balanceQuery() {                                                         // balance query korar jonno
+    void balanceQuery() {
         displayHeader("BALANCE QUERY");
         string userid = getValidUserId();
 
@@ -758,20 +765,20 @@ public:
             if (parts.size() >= 7 && parts[0] == userid) {
                 found = true;
                 displayHeader("BALANCE QUERY");
-                cout << "User ID:      " << 7638000000 + stoll(parts[0]) << "\n";
-                cout << "Name:         " << parts[1] << "\n";
-                cout << "Balance:      " << fixed << setprecision(2) << parts[6] << " TK\n";
+                cout << BOLD << "User ID:      " << RESET << "7638" << parts[0] << "\n";
+                cout << BOLD << "Name:         " << RESET << parts[1] << "\n";
+                cout << BOLD << "Balance:      " << RESET << fixed << setprecision(2) << parts[6] << " TK\n";
                 break;
             }
         }
 
         if (!found) {
-            cout << "Account not found.\n";
+            cout << RED << "Account not found.\n" << RESET;
         }
         returnMenuOrExit();
     }
 
-    void updateCustomer(string userid, double change) {
+    void updateCustomer(string userid, double change) {                                                        // customer balance update korar jonno function
         ifstream in("customers.txt");
         ofstream out("temp.txt");
         string line;
@@ -792,10 +799,9 @@ public:
         out.close();
         remove("customers.txt");
         rename("temp.txt", "customers.txt");
-        
     }
 
-    void aboutUs() {                                                              // about us page dekhanor jonno
+    void aboutUs() {                                                                                           // about us page dekhanor jonno function
         displayHeader("ABOUT BANGLADESH BANK");
 
         ifstream in("customers.txt");
@@ -811,17 +817,19 @@ public:
             }
         }
 
-        cout << "Welcome to Bangladesh Bank Management System - SHIELD\n";
-        cout << "----------------------------------------\n";
-        cout << "Total Customers: " << customerCount << "\n";
-        cout << "Total Assets:    " << fixed << setprecision(2) << totalBalance << " TK\n";
-        cout << "\nDeveloped by Team NuroFive\n";
-        
+        cout << BOLD << CYAN << "Welcome to Bangladesh Bank Management System - SHIELD\n" << RESET;
+        cout << YELLOW << "----------------------------------------\n" << RESET;
+        cout << BOLD << "Total Customers: " << RESET << customerCount << "\n";
+        cout << BOLD << "Total Assets:    " << RESET << fixed << setprecision(2) << totalBalance << " TK\n";
+        cout << BOLD << "Contact : 01786500883 \n" << RESET;
+        cout << BOLD << "Email:nurofive01@gmail.com\n" << RESET;
+        cout << BOLD << "Website: www.nurofive.com\n" << RESET;
+        cout << "\n" << MAGENTA << "Developed by Team NuroFive\n" << RESET;
 
         returnMenuOrExit();
     }
 
-    bool recoverPassword(string userid) {                                   // password recover korar jonno 
+    bool recoverPassword(string userid) {                                                                     // password recover korar jonno function
         displayHeader("PASSWORD RECOVERY");
 
         ifstream file("customers.txt");
@@ -830,17 +838,29 @@ public:
             vector<string> parts = splitString(line, '|');
             if (parts.size() >= 6 && parts[0] == userid) {
                 string inputPhone;
-                cout << "Enter registered phone number: ";
+                cout << BOLD << "Enter registered phone number: " << RESET;
                 cin >> inputPhone;
 
-                if (inputPhone == parts[4]) {string newPass, confirmPass;  cout << "Enter new password (min 4 chars): "; cin >> newPass; cout << "Confirm new password: "; cin >> confirmPass;
+                if (inputPhone == parts[4]) {
+                    string newPass, confirmPass;
+                    cout << BOLD << "Enter new password (min 4 chars): " << RESET;
+                    cin >> newPass;
+                    cout << BOLD << "Confirm new password: " << RESET;
+                    cin >> confirmPass;
 
-                    if (newPass == confirmPass && newPass.length() >= 4) {ifstream pfile("users.txt");  ofstream ptemp("ptemp.txt");
+                    if (newPass == confirmPass && newPass.length() >= 4) {
+                        ifstream pfile("users.txt");
+                        ofstream ptemp("ptemp.txt");
                         bool updated = false;
 
-                        while (getline(pfile, line)) {vector<string> userParts = splitString(line, '|');
-                            if (userParts.size() >= 1 && userParts[0] == userid) { ptemp << userid << "|" << newPass << endl; updated = true;  } 
-                            else { ptemp << line << endl; }
+                        while (getline(pfile, line)) {
+                            vector<string> userParts = splitString(line, '|');
+                            if (userParts.size() >= 1 && userParts[0] == userid) {
+                                ptemp << userid << "|" << newPass << endl;
+                                updated = true;
+                            } else {
+                                ptemp << line << endl;
+                            }
                         }
 
                         pfile.close();
@@ -848,17 +868,22 @@ public:
                         remove("users.txt");
                         rename("ptemp.txt", "users.txt");
 
-                        if (updated) {cout << "\nPassword updated successfully.\n";return true; }
-                    } 
-                    else {cout << "Passwords don't match or are too short.\n"; return false; }
+                        if (updated) {
+                            cout << GREEN << "\nPassword updated successfully.\n" << RESET;
+                            return true;
+                        }
+                    } else {
+                        cout << RED << "Passwords don't match or are too short.\n" << RESET;
+                        return false;
+                    }
                 } else {
-                    cout << "Phone number doesn't match our records.\n";
+                    cout << RED << "Phone number doesn't match our records.\n" << RESET;
                     return false;
                 }
             }
         }
 
-        cout << "User ID not found.\n";
+        cout << RED << "User ID not found.\n" << RESET;
         return false;
     }
 };
@@ -867,11 +892,13 @@ int main() {
     Bank bank;
     int choice;
 
-    do {cout << "\n     ========================================\n";
-       cout << "               " << "BANGLADESH BANK" << "\n";
-       cout << "     ========================================\n\n";
+    do {
+        cout << "\n" << BOLD << BLUE;
+        cout << "========================================\n";
+        cout << "        BANGLADESH BANK - SHIELD\n";
+        cout << "========================================\n\n" << RESET;
 
-        cout << "Welcome to Bangladesh Bank Management system - SHIELD\n\n";
+        cout << BOLD << "Welcome to Bangladesh Bank Management System\n\n" << RESET;
         vector<string> options = {
             "Create Account",
             "User Login",
@@ -883,29 +910,30 @@ int main() {
         cout << "Enter your choice: ";
 
         while (!(cin >> choice) || choice < 1 || choice > 5) {
-            cout << "Invalid choice. Enter 1-5: ";
+            cout << RED << "Invalid choice. Enter 1-5: " << RESET;
             clearInputBuffer();
         }
-      switch (choice) {
+
+        switch (choice) {
             case 1:
                 bank.createAccount();
                 break;
-           case 2: {
+            case 2: {
                 bank.displayHeader("USER LOGIN");
                 string userid = bank.getValidUserId();
                 string pass;
-                cout << "Enter password: ";
+                cout << BOLD << "Enter password: " << RESET;
                 cin >> pass;
 
                 if (bank.validateUserLogin(userid, pass)) {
                     bank.userPanel(userid);
                 } else {
-                    cout << "\nLogin failed.\n";
+                    cout << RED << "\nLogin failed.\n" << RESET;
                     cout << "1. Try again\n2. Recover password\n3. Main menu\nEnter choice: ";
 
                     int option;
                     while (!(cin >> option) || option < 1 || option > 3) {
-                        cout << "Invalid choice. Enter 1-3: ";
+                        cout << RED << "Invalid choice. Enter 1-3: " << RESET;
                         clearInputBuffer();
                     }
 
@@ -921,15 +949,15 @@ int main() {
             case 3: {
                 bank.displayHeader("MANAGER LOGIN");
                 string id, pass;
-                cout << "Enter manager ID: ";
+                cout << BOLD << "Enter manager ID: " << RESET;
                 cin >> id;
-                cout << "Enter password: ";
+                cout << BOLD << "Enter password: " << RESET;
                 cin >> pass;
 
                 if (bank.validateManager(id, pass)) {
                     bank.managerPanel();
                 } else {
-                    cout << "Invalid credentials.\n";
+                    cout << RED << "Invalid credentials.\n" << RESET;
                 }
                 break;
             }
@@ -939,7 +967,9 @@ int main() {
                 break;
 
             case 5:
-                cout << "\nThank you for banking with us.\n";
+                cout << "\n" << GREEN << "========================================\n";
+                cout << "   Thank you for banking with us!\n";
+                cout << "========================================\n" << RESET;
                 exit(0);
         }
     } while (true);
